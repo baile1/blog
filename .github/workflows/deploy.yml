@@ -3,10 +3,10 @@ name: Deploy Vue Site
 on:
   push:
     branches:
-      - main # 监听 main 分支的推送
+      - main
 
 permissions:
-  contents: write # 允许脚本推送代码到 gh-pages 分支
+  contents: write
 
 jobs:
   build-and-deploy:
@@ -15,25 +15,22 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Install pnpm
-        uses: pnpm/action-setup@v2
-        with:
-          version: 8
-
       - name: Set up Node
         uses: actions/setup-node@v4
         with:
-          node-version: 20
-          cache: "pnpm"
+          node-version: 25.2.1
+          # 注意：这里改为缓存 npm 的路径
+          cache: "npm"
 
       - name: Install dependencies
-        run: pnpm install
+        # 使用 npm ci 或 npm install
+        run: npm install
 
       - name: Build
-        run: pnpm run build
+        run: npm run build
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./dist # Vite 默认输出目录
+          publish_dir: ./dist
